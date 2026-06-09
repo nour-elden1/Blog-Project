@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Psy\Output\Theme;   
 use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,16 +19,21 @@ use App\Http\Controllers\ThemeController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Theme routes
 Route::controller(ThemeController::class)->name('theme.')->group(function () {
     Route::get('/', 'index')->name('index');
-    Route::get('/category', 'category')->name('category');
+    Route::get('/category/{id}', 'category')->name('category');
     Route::get('/contact', 'contact')->name('contact');
-    Route::get('/single-blog', 'singleBlog')->name('singleBlog');
-    Route::get('/registerr', 'registerr')->name('registerr');
-    Route::get('/loginn','loginn')->name('loginn');
 });
-
-
+// Subscriber store route
+Route::post('/subscriber/store', [SubscriberController::class, 'store'])->name('subscribe.store');
+// Contact store route
+Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
+// Blog routes
+Route::get('/my-blogs', [BlogController::class, 'myBlogs'])->name('blogs.my-blogs');
+Route::resource('blogs', BlogController::class);
+// Comment routes
+Route::post('/comments/store', [CommentController::class, 'store'])->name('comments.store');
 
 
 Route::get('/dashboard', function () {

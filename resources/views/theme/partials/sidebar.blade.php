@@ -1,51 +1,50 @@
+@php
+    use App\Models\Category;
+    $sidebarCategories = Category::all();
+@endphp
+
 <div class="col-lg-4 sidebar-widgets">
     <div class="widget-wrap">
         <div class="single-sidebar-widget newsletter-widget">
             <h4 class="single-sidebar-widget__title">Newsletter</h4>
-            <div class="form-group mt-30">
-                <div class="col-autos">
-                    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter email"
-                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email'">
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
                 </div>
-            </div>
-            <button class="bbtns d-block mt-20 w-100">Subcribe</button>
+            @endif
+            <form action="{{ route('subscribe.store') }}" method="POST">
+                @csrf
+                <div class="form-group mt-30">
+                    <div class="col-autos">
+                        <input type="text" name="email" class="form-control" id="inlineFormInputGroup"
+                            placeholder="Enter email" onfocus="this.placeholder = ''"
+                            onblur="this.placeholder = 'Enter email'" value="{{ old('email') }}">
+                        @error('email')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <button type="submit" class="bbtns d-block mt-20 w-100">Subcribe</button>
+            </form>
         </div>
 
-        <div class="single-sidebar-widget post-category-widget">
-            <h4 class="single-sidebar-widget__title">Catgory</h4>
-            <ul class="cat-list mt-20">
-                <li>
-                    <a href="#" class="d-flex justify-content-between">
-                        <p>Technology</p>
-                        <p>(03)</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="d-flex justify-content-between">
-                        <p>Software</p>
-                        <p>(09)</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="d-flex justify-content-between">
-                        <p>Lifestyle</p>
-                        <p>(12)</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="d-flex justify-content-between">
-                        <p>Shopping</p>
-                        <p>(02)</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="d-flex justify-content-between">
-                        <p>Food</p>
-                        <p>(10)</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        @if (count($sidebarCategories) > 0)
+            <div class="single-sidebar-widget post-category-widget">
+                <h4 class="single-sidebar-widget__title">Category</h4>
+                <ul class="cat-list mt-20">
+                    @foreach ($sidebarCategories as $category)
+                        <li>
+                            <a href="{{ route('theme.category', ['id' => $category->id]) }}"
+                                class="d-flex justify-content-between">
+                                <p>{{ $category->name }}</p>
+                                <p>({{ count($category->blogs) }})</p>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+
+            </div>
+        @endif
 
         <div class="single-sidebar-widget popular-post-widget">
             <h4 class="single-sidebar-widget__title">Recent Post</h4>
